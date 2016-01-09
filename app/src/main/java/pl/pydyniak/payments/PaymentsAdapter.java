@@ -17,12 +17,12 @@ import java.util.Date;
  * Created by rafal on 29.11.15.
  */
 public class PaymentsAdapter extends BaseAdapter {
-    private ArrayList<Payment> paymentsList;
+    private PaymentDatabase paymentDatabase;
     private Context context;
 
-    public PaymentsAdapter(Context context, ArrayList<Payment> paymentsList) {
-        this.paymentsList = paymentsList;
+    public PaymentsAdapter(Context context) {
         this.context = context;
+        paymentDatabase = new PaymentDatabase(context);
     }
 
     @Override
@@ -46,7 +46,8 @@ public class PaymentsAdapter extends BaseAdapter {
 
     @Override
     public Payment getItem(int position) {
-        return paymentsList.get(position);
+        Payment payment = paymentDatabase.getPaymentByPosition(position);
+        return payment;
     }
 
     private void bindPaymentToView(Payment payment, View paymentView, int position) {
@@ -82,7 +83,7 @@ public class PaymentsAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return paymentsList.size();
+        return paymentDatabase.getPaymentsNumber();
     }
 
     @Override

@@ -17,7 +17,6 @@ import pl.pydyniak.payments.R;
 
 public class PaymentsListActivity extends ActionBarActivity {
     private ListView listView;
-    private ArrayList<Payment> paymentsItemsList;
     private PaymentsAdapter adapter;
 
     @Override
@@ -31,20 +30,10 @@ public class PaymentsListActivity extends ActionBarActivity {
 
     private void initializeList() {
         listView = (ListView) findViewById(R.id.paymentsList);
-        paymentsItemsList = getPaymentsList();
-        adapter = new PaymentsAdapter(this, paymentsItemsList);
+        adapter = new PaymentsAdapter(this);
         listView.setAdapter(adapter);
         listView.setOnItemClickListener(createAndReturnClickListener());
 
-    }
-
-    private ArrayList<Payment> getPaymentsList() {
-        ArrayList<Payment> paymentsList = new ArrayList<>();
-        for (int i=0;i<10;i++) {
-            Payment payment = new Payment("name" + i, new Date(), "description", 22.22);
-            paymentsList.add(payment);
-        }
-        return paymentsList;
     }
 
     private AdapterView.OnItemClickListener createAndReturnClickListener() {
@@ -57,7 +46,7 @@ public class PaymentsListActivity extends ActionBarActivity {
     }
 
     private void togglePaymentItem(View view, final int position) {
-        Payment payment = paymentsItemsList.get(position);
+        Payment payment = adapter.getItem(position);
         payment.setIsOpen(!payment.isOpen());
         adapter.notifyDataSetChanged();
     }
