@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -45,8 +46,10 @@ public class PaymentDatabase implements PaymentsProvider {
     private Cursor getDetailsCursor(long id) {
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         String[] tables = {PaymentsTable._ID, PaymentsTable.COLUMN_NAME, PaymentsTable.COLUMN_DATE, PaymentsTable.COLUMN_DESCRIPTION, PaymentsTable.COLUMN_PRICE};
-        String where = PaymentsTable._ID+"=?";
-        Cursor cursor = db.query(PaymentsTable.TABLE_NAME, tables, where, null, null, null, null, null);
+        String where = PaymentsTable._ID+" = ?";
+        String[] selectionArgs = { String.valueOf(id) };
+        Cursor cursor = db.query(PaymentsTable.TABLE_NAME, tables, where, selectionArgs, null, null, null);
+        cursor.moveToFirst();
         return cursor;
     }
 
@@ -57,6 +60,21 @@ public class PaymentDatabase implements PaymentsProvider {
         payment.setDescription(cursor.getString(cursor.getColumnIndexOrThrow(PaymentsTable.COLUMN_DESCRIPTION)));
         payment.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(PaymentsTable.COLUMN_PRICE)));
         return payment;
+    }
+
+    public Payment getPaymentByPosition(int position) {
+        Payment payment;
+        Cursor cursor = getDetailsCursorByPosition(position);
+        payment = createAndReturnPaymentFromCursor(cursor);
+        return payment;
+    }
+
+    private Cursor getDetailsCursorByPosition(int position) {
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        String[] tables = {PaymentsTable._ID, PaymentsTable.COLUMN_NAME, PaymentsTable.COLUMN_DATE, PaymentsTable.COLUMN_DESCRIPTION, PaymentsTable.COLUMN_PRICE};
+        Cursor cursor = db.query(PaymentsTable.TABLE_NAME, tables, null, null, null, null, null);
+        cursor.moveToPosition(position);
+        return cursor;
     }
 
     public void deletePaymentByItsId(long id) {
@@ -70,6 +88,11 @@ public class PaymentDatabase implements PaymentsProvider {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         db.delete(PaymentsTable.TABLE_NAME, null, null);
     }
+
+//    public ArrayList<Payment> getAllPayments() {
+//        ArrayList<Payment> payments = new ArrayList<>();
+//        return payments;
+//    }
 
     @Override
     public Payment getPayment(int position) {

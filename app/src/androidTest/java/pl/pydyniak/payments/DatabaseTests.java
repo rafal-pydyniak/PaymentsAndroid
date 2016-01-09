@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -50,7 +51,7 @@ public class DatabaseTests {
     }
 
     @Test
-    public void getPaymentById() throws Exception{
+    public void getPaymentByIdTest() throws Exception{
         long id = paymentDatabase.addPaymentAndReturnItsId(paymentInstance);
         Payment payment = paymentDatabase.getPaymentById(id);
         assertEquals(paymentInstance.getDate(), payment.getDate());
@@ -58,4 +59,31 @@ public class DatabaseTests {
         assertEquals(paymentInstance.getName(), payment.getName());
         assertEquals(paymentInstance.getPrice(), payment.getPrice());
     }
+
+    @Test
+    public void getPaymentByPositionTest() throws Exception{
+        paymentDatabase.addPaymentAndReturnItsId(paymentInstance);
+        int position = paymentDatabase.getPaymentsNumber()-1;
+        Payment payment = paymentDatabase.getPaymentByPosition(position);
+        assertEquals(paymentInstance.getDate(), payment.getDate());
+        assertEquals(paymentInstance.getDescription(), payment.getDescription());
+        assertEquals(paymentInstance.getName(), payment.getName());
+        assertEquals(paymentInstance.getPrice(), payment.getPrice());
+    }
+
+//    @Test
+//    public void testIfGettingAllWorks() throws Exception {
+//        paymentDatabase.deleteAllPayments(); //Clear before testing
+//        Payment paymentInstance2 = paymentInstance;
+//        paymentInstance2.setName("SomeOtherName");
+//        Double instance2Price = 5559.0;
+//        paymentInstance2.setPrice(instance2Price);
+//        paymentDatabase.addPaymentAndReturnItsId(paymentInstance);
+//        paymentDatabase.addPaymentAndReturnItsId(paymentInstance2);
+//
+//        ArrayList<Payment> paymentsList = paymentDatabase.getAllPayments();
+//        assertEquals(2, paymentsList.size());
+//        assertEquals("SomeOtherName", paymentsList.get(1).getName());
+//        assertEquals(instance2Price, paymentsList.get(1).getPrice());
+//    }
 }
