@@ -16,6 +16,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import pl.pydyniak.payments.Exceptions.NotEnoughInformationException;
 import pl.pydyniak.payments.domain.Payment;
 import pl.pydyniak.payments.database.PaymentDatabase;
 import pl.pydyniak.payments.database.PaymentsProvider;
@@ -58,7 +59,7 @@ public class AddPaymentActivity extends ActionBarActivity implements View.OnClic
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.addButton:
-                addPayment();
+                tryToAddPayment();
                 break;
             case R.id.calendarDateButton:
                 showDateFragment();
@@ -66,7 +67,15 @@ public class AddPaymentActivity extends ActionBarActivity implements View.OnClic
         }
     }
 
-    private void addPayment() {
+    private void tryToAddPayment() {
+        try {
+            addPayment();
+        } catch (NotEnoughInformationException e) {
+            Toast.makeText(this, R.string.error_not_enough_information, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void addPayment() throws NotEnoughInformationException{
         Payment payment = createAndReturnPayment();
         PaymentsProvider db = new PaymentDatabase(this);
         db.addPaymentAndReturnItsId(payment);
@@ -75,11 +84,20 @@ public class AddPaymentActivity extends ActionBarActivity implements View.OnClic
         startActivity(i);
     }
 
-    private Payment createAndReturnPayment() {
+    private Payment createAndReturnPayment() throws NotEnoughInformationException{
         Payment payment = new Payment();
-        payment.setName(paymentName.getText().toString());
-        payment.setDescription(paymentDescription.getText().toString());
-        payment.setPrice(Double.parseDouble(paymentPrice.getText().toString()));
+
+        String name = paymentName.getText().toString();
+        String description = paymentDescription.getText().toString();
+        String price = paymentPrice.getText().toString();
+
+        if (name.isEmpty() || price.isEmpty()) {
+            throw new NotEnoughInformationException();
+        }
+
+        payment.setName(name);
+        payment.setDescription(description);
+        payment.setPrice(Double.parseDouble(price));
         payment.setDate(dateSelected);
         return payment;
     }

@@ -23,4 +23,5 @@
     <string name="payment_deleted_success">Payment deleted</string>
     <string name="payment_added_success">Payment added</string>
     <string name="payment_edited_success">Payment edited</string>
+    <string name="error_not_enough_information">Payment has to have name and price</string>
 </resources>

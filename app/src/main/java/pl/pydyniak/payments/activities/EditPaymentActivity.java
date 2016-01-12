@@ -17,6 +17,7 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import pl.pydyniak.payments.Exceptions.NotEnoughInformationException;
 import pl.pydyniak.payments.domain.Payment;
 import pl.pydyniak.payments.database.PaymentDatabase;
 import pl.pydyniak.payments.database.PaymentsProvider;
@@ -76,7 +77,7 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
     public void onClick(View v) {
         switch(v.getId()) {
             case R.id.editButton:
-                editPayment();
+                tryToEditPayment();
                 break;
             case R.id.calendarDateButton:
                 showDateFragment();
@@ -84,7 +85,15 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
         }
     }
 
-    private void editPayment() {
+    private void tryToEditPayment() {
+        try {
+            editPayment();
+        } catch (NotEnoughInformationException e) {
+            Toast.makeText(this, R.string.error_not_enough_information, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void editPayment() throws NotEnoughInformationException{
         Payment payment = createAndReturnPayment();
         db.updatePayment(payment, db.getPaymentIdByPosition(position));
         Toast.makeText(this, getString(R.string.payment_edited_success), Toast.LENGTH_SHORT).show();
@@ -92,11 +101,20 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
         startActivity(i);
     }
 
-    private Payment createAndReturnPayment() {
+    private Payment createAndReturnPayment() throws NotEnoughInformationException{
         Payment payment = new Payment();
-        payment.setName(paymentName.getText().toString());
-        payment.setDescription(paymentDescription.getText().toString());
-        payment.setPrice(Double.parseDouble(paymentPrice.getText().toString()));
+
+        String name = paymentName.getText().toString();
+        String description = paymentDescription.getText().toString();
+        String price = paymentPrice.getText().toString();
+
+        if (name.isEmpty() || price.isEmpty()) {
+            throw new NotEnoughInformationException();
+        }
+
+        payment.setName(name);
+        payment.setDescription(description);
+        payment.setPrice(Double.parseDouble(price));
         payment.setDate(dateSelected);
         return payment;
     }
