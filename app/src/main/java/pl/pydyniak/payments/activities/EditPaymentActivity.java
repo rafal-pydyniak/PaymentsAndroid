@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -143,6 +144,22 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeButtonEnabled(true);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                goBackToMainIntent();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void goBackToMainIntent() {
+        Intent intent = new Intent(this, PaymentsListActivity.class);
+        startActivity(intent);
     }
 
     @Override
