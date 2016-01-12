@@ -3,6 +3,10 @@ package pl.pydyniak.payments.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +26,7 @@ import pl.pydyniak.payments.fragments.DatePickerFragment;
 /**
  * Created by rafal on 29.11.15.
  */
-public class EditPaymentActivity extends Activity implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener{
+public class EditPaymentActivity extends ActionBarActivity implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener{
     EditText paymentName;
     EditText paymentDescription;
     EditText paymentPrice;
@@ -101,6 +105,26 @@ public class EditPaymentActivity extends Activity implements View.OnClickListene
         DatePickerFragment picker = new DatePickerFragment();
         picker.setDate(dateSelected);
         picker.show(getFragmentManager(), "date");
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit, menu);
+
+        setupActionBar();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
     }
 
     @Override
