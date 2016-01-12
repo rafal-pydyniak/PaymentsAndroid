@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:orientation="vertical">
 
     <LinearLayout
@@ -9,24 +10,58 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/nameTextView"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Payment name"
-            android:textColor="@android:color/black"
-            android:textSize="30dp" />
+            android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Date time"
-            android:textColor="@android:color/black"
-            android:textSize="20dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/linear">
+
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.6"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+
+                    android:text="Payment name"
+                    android:textColor="@android:color/black"
+                    android:textSize="30dp" />
+
+                <ImageButton
+                    android:id="@+id/editPaymentButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp"
+                    android:src="@android:drawable/ic_menu_edit" />
+
+                <ImageButton
+                    android:id="@+id/deletePaymentButton"
+                    android:layout_width="0dp"
+                    android:layout_weight="0.2"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:focusable="false"
+                    android:src="@android:drawable/ic_menu_delete" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/dateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/linear"
+                android:text="Date time"
+                android:textColor="@android:color/black"
+                android:textSize="20dp" />
+
+        </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/paymentRowExtendedInfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -34,18 +69,39 @@
 
         <TextView
             android:id="@+id/descriptionLabelView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Description:"
+            android:text="@string/payment_description_label"
             android:textColor="@android:color/black"
             android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/paymentPriceLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_toLeftOf="@id/paymentPriceEditText"
+            android:text="@string/payment_amount_label"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/paymentPriceEditText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="10dp"
+            android:text="55.5"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="15dp" />
 
         <TextView
             android:id="@+id/descriptionTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/descriptionLabelView"
             android:text="Description description description"
             android:textSize="15dp" />
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

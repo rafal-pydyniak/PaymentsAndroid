@@ -5,21 +5,23 @@ import static org.junit.Assert.*;
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.test.InstrumentationTestRunner;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.ArrayList;
 import java.util.Date;
+
+import pl.pydyniak.payments.database.PaymentDatabase;
+import pl.pydyniak.payments.database.PaymentsProvider;
+import pl.pydyniak.payments.domain.Payment;
 
 /**
  * Created by rafal on 02.01.16.
  */
 @RunWith(AndroidJUnit4.class)
 public class DatabaseTests {
-    PaymentDatabase paymentDatabase;
+    PaymentsProvider paymentDatabase;
     Payment paymentInstance;
 
     @Before
@@ -69,6 +71,29 @@ public class DatabaseTests {
         assertEquals(paymentInstance.getDescription(), payment.getDescription());
         assertEquals(paymentInstance.getName(), payment.getName());
         assertEquals(paymentInstance.getPrice(), payment.getPrice());
+        assertEquals(paymentInstance.isOpen(), payment.isOpen());
+    }
+
+    @Test
+    public void getPaymentIdByPositionTest() throws Exception {
+        Long id = paymentDatabase.addPaymentAndReturnItsId(paymentInstance);
+        int position = paymentDatabase.getPaymentsNumber()-1;
+        Long paymentId = paymentDatabase.getPaymentIdByPosition(position);
+        assertEquals(id, paymentId);
+    }
+
+    @Test
+    public void updatePaymentTest() throws Exception{
+        Payment paymentLocalInstance = new Payment("updateTest", new Date(), "updateTest", 12.222);
+        assertEquals(false, paymentLocalInstance.isOpen());
+        paymentDatabase.addPaymentAndReturnItsId(paymentLocalInstance);
+        long id = paymentDatabase.getPaymentIdByPosition(paymentDatabase.getPaymentsNumber() - 1);
+        paymentLocalInstance.setName("update test after update");
+        paymentLocalInstance.setIsOpen(true);
+        paymentDatabase.updatePayment(paymentLocalInstance, id);
+        Payment payment = paymentDatabase.getPaymentById(id);
+        assertEquals(paymentLocalInstance.getName(), payment.getName());
+        assertEquals(paymentLocalInstance.isOpen(), payment.isOpen());
     }
 
 //    @Test

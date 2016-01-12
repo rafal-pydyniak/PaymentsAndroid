@@ -13,4 +13,14 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="payment_name_label">Name</string>
+    <string name="payment_description_label">Description</string>
+    <string name="payment_price_label">Price</string>
+    <string name="payment_date_label">End date:</string>
+    <string name="payment_add_label">Add payment</string>
+    <string name="payment_edit_label">Edit payment</string>
+    <string name="payment_amount_label">Amount:</string>
+    <string name="payment_deleted_success">Payment deleted</string>
+    <string name="payment_added_success">Payment added</string>
+    <string name="payment_edited_success">Payment edited</string>
 </resources>

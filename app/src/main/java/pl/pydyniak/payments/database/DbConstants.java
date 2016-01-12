@@ -1,4 +1,4 @@
-package pl.pydyniak.payments;
+package pl.pydyniak.payments.database;
 
 import android.provider.BaseColumns;
 
@@ -18,5 +18,6 @@ public class DbConstants {
         public static final String COLUMN_DATE = "date";
         public static final String COLUMN_PRICE = "price";
         public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_ISOPEN = "is_open";
     }
 }

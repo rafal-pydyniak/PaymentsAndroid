@@ -1,4 +1,4 @@
-package pl.pydyniak.payments;
+package pl.pydyniak.payments.domain;
 
 import java.util.Date;
 
