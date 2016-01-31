@@ -17,25 +17,25 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import pl.pydyniak.payments.Exceptions.NotEnoughInformationException;
-import pl.pydyniak.payments.domain.Payment;
+import pl.pydyniak.payments.R;
 import pl.pydyniak.payments.database.PaymentDatabase;
 import pl.pydyniak.payments.database.PaymentsProvider;
-import pl.pydyniak.payments.R;
+import pl.pydyniak.payments.domain.Payment;
+import pl.pydyniak.payments.exceptions.NotEnoughInformationException;
 import pl.pydyniak.payments.fragments.DatePickerFragment;
 
 /**
  * Created by rafal on 29.11.15.
  */
 public class AddPaymentActivity extends ActionBarActivity implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener{
-    EditText paymentName;
-    EditText paymentDescription;
-    EditText paymentPrice;
-    TextView paymentDateLabel;
+    private EditText paymentName;
+    private EditText paymentDescription;
+    private EditText paymentPrice;
+    private TextView paymentDateLabel;
 
-    ImageButton dateButton;
-    Button addPaymentButton;
-    Date dateSelected = new Date();
+    private ImageButton dateButton;
+    private Button addPaymentButton;
+    private Date dateSelected = new Date();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,13 +100,15 @@ public class AddPaymentActivity extends ActionBarActivity implements View.OnClic
         payment.setDescription(description);
         payment.setPrice(Double.parseDouble(price));
         payment.setDate(dateSelected);
+        payment.setTimestamp(new Date().getTime());
+        payment.setLastUpdated(new Date().getTime());
         return payment;
     }
 
     private void showDateFragment() {
         DatePickerFragment picker = new DatePickerFragment();
         picker.setDate(dateSelected);
-        picker.show(getFragmentManager(), "date");
+        picker.show(getFragmentManager(), getString(R.string.date_fragment_label));
     }
 
     @Override

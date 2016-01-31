@@ -7,14 +7,13 @@ import android.app.DialogFragment;
 import android.os.Bundle;
 import android.widget.DatePicker;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class DatePickerFragment extends DialogFragment
                             implements DatePickerDialog.OnDateSetListener {
-    OnDateSelectedListener dateListener;
-    Date date;
+    private OnDateSelectedListener dateListener;
+    private Date date;
 
     public void setDate(Date date) {
         this.date = date;

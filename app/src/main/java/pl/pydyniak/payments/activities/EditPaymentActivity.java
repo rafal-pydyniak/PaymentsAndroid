@@ -1,6 +1,5 @@
 package pl.pydyniak.payments.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -18,35 +17,36 @@ import android.widget.Toast;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import pl.pydyniak.payments.Exceptions.NotEnoughInformationException;
-import pl.pydyniak.payments.domain.Payment;
+import pl.pydyniak.payments.R;
 import pl.pydyniak.payments.database.PaymentDatabase;
 import pl.pydyniak.payments.database.PaymentsProvider;
-import pl.pydyniak.payments.R;
+import pl.pydyniak.payments.domain.Payment;
+import pl.pydyniak.payments.exceptions.NotEnoughInformationException;
 import pl.pydyniak.payments.fragments.DatePickerFragment;
 
 /**
  * Created by rafal on 29.11.15.
  */
 public class EditPaymentActivity extends ActionBarActivity implements View.OnClickListener, DatePickerFragment.OnDateSelectedListener{
-    EditText paymentName;
-    EditText paymentDescription;
-    EditText paymentPrice;
-    TextView paymentDateLabel;
-    ImageButton dateButton;
-    Button editPaymentButton;
-    Date dateSelected = new Date();
+    private EditText paymentName;
+    private EditText paymentDescription;
+    private EditText paymentPrice;
+    private TextView paymentDateLabel;
+    private ImageButton dateButton;
+    private Button editPaymentButton;
+    private Date dateSelected = new Date();
+    private Payment payment;
 
-    PaymentsProvider db;
+    private PaymentsProvider db;
 
-    int position;
+    private int position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.edit_payment);
         db = new PaymentDatabase(this);
         Bundle extras = getIntent().getExtras();
-        position = extras.getInt("position");
+        position = extras.getInt(getString(R.string.positionExtra));
         setupViews();
     }
 
@@ -56,8 +56,8 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
         paymentPrice = (EditText) findViewById(R.id.paymentPriceEditText);
         paymentDateLabel = (TextView) findViewById(R.id.paymentDateLabel);
 
-        Payment payment = db.getPaymentByPosition(position);
-        setViewsForPayment(payment);
+        payment = db.getPaymentByPosition(position);
+        setViewsForPayment();
 
         dateButton = (ImageButton) findViewById(R.id.calendarDateButton);
         dateButton.setOnClickListener(this);
@@ -65,7 +65,7 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
         editPaymentButton.setOnClickListener(this);
     }
 
-    private void setViewsForPayment(Payment payment) {
+    private void setViewsForPayment() {
         paymentName.setText(payment.getName());
         paymentDescription.setText(payment.getDescription());
         paymentPrice.setText(payment.getPrice().toString());
@@ -95,16 +95,14 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
     }
 
     private void editPayment() throws NotEnoughInformationException{
-        Payment payment = createAndReturnPayment();
-        db.updatePayment(payment, db.getPaymentIdByPosition(position));
+        setPaymentVariables();
+        db.updatePayment(payment, payment.getId());
         Toast.makeText(this, getString(R.string.payment_edited_success), Toast.LENGTH_SHORT).show();
         Intent i = new Intent(this, PaymentsListActivity.class);
         startActivity(i);
     }
 
-    private Payment createAndReturnPayment() throws NotEnoughInformationException{
-        Payment payment = new Payment();
-
+    private void setPaymentVariables() throws NotEnoughInformationException{
         String name = paymentName.getText().toString();
         String description = paymentDescription.getText().toString();
         String price = paymentPrice.getText().toString();
@@ -117,13 +115,13 @@ public class EditPaymentActivity extends ActionBarActivity implements View.OnCli
         payment.setDescription(description);
         payment.setPrice(Double.parseDouble(price));
         payment.setDate(dateSelected);
-        return payment;
+        payment.setLastUpdated(new Date().getTime());
     }
 
     private void showDateFragment() {
         DatePickerFragment picker = new DatePickerFragment();
         picker.setDate(dateSelected);
-        picker.show(getFragmentManager(), "date");
+        picker.show(getFragmentManager(), getString(R.string.date_fragment_label));
     }
 
     @Override

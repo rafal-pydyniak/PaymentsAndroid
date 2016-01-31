@@ -1,7 +1,5 @@
 package pl.pydyniak.payments;
 
-import static org.junit.Assert.*;
-
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
@@ -16,19 +14,23 @@ import pl.pydyniak.payments.database.PaymentDatabase;
 import pl.pydyniak.payments.database.PaymentsProvider;
 import pl.pydyniak.payments.domain.Payment;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * Created by rafal on 02.01.16.
  */
 @RunWith(AndroidJUnit4.class)
 public class DatabaseTests {
-    PaymentsProvider paymentDatabase;
-    Payment paymentInstance;
+    private PaymentsProvider paymentDatabase;
+    private Payment paymentInstance;
 
     @Before
     public void initialize() {
         Context context = InstrumentationRegistry.getTargetContext();
         paymentDatabase = new PaymentDatabase(context);
         paymentInstance = new Payment("testName", new Date(), "testDescription", 11.11);
+        paymentInstance.setLastUpdated(new Date().getTime());
+        paymentInstance.setTimestamp(new Date().getTime());
     }
 
     @Test

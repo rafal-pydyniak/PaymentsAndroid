@@ -1,7 +1,10 @@
 package pl.pydyniak.payments.activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -11,12 +14,18 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import pl.pydyniak.payments.domain.Payment;
+import org.json.JSONException;
+
+import java.io.IOException;
+
 import pl.pydyniak.payments.PaymentsAdapter;
 import pl.pydyniak.payments.R;
+import pl.pydyniak.payments.domain.Payment;
+import pl.pydyniak.payments.exceptions.UnauthorizedException;
 import pl.pydyniak.payments.fragments.DeleteConfirmDialogFragment;
+import pl.pydyniak.payments.restManagement.ServerConnector;
 
-public class PaymentsListActivity extends ActionBarActivity implements PaymentsAdapter.OnDeletePaymentClicked, DeleteConfirmDialogFragment.OnPositiveDelete{
+public class PaymentsListActivity extends ActionBarActivity implements PaymentsAdapter.OnDeletePaymentClicked, DeleteConfirmDialogFragment.OnPositiveDelete {
     private ListView listView;
     private PaymentsAdapter adapter;
 
@@ -43,6 +52,10 @@ public class PaymentsListActivity extends ActionBarActivity implements PaymentsA
                 startAddPaymentActivity();
                 return true;
             }
+            case R.id.synchronize: {
+                synchronize();
+                return true;
+            }
             default: {
                 return super.onOptionsItemSelected(item);
             }
@@ -52,6 +65,11 @@ public class PaymentsListActivity extends ActionBarActivity implements PaymentsA
     private void startAddPaymentActivity() {
         Intent i = new Intent(this, AddPaymentActivity.class);
         startActivity(i);
+    }
+
+    private void synchronize() {
+        Connection connection = new Connection(this);
+        connection.execute();
     }
 
     private void initializeList() {
@@ -92,9 +110,9 @@ public class PaymentsListActivity extends ActionBarActivity implements PaymentsA
     private void showConfirmDialog(int position) {
         DeleteConfirmDialogFragment confirmDialogFragment = new DeleteConfirmDialogFragment();
         Bundle bundle = new Bundle();
-        bundle.putInt("position", position);
+        bundle.putInt(getString(R.string.positionExtra), position);
         confirmDialogFragment.setArguments(bundle);
-        confirmDialogFragment.show(getFragmentManager(), "Delete payment");
+        confirmDialogFragment.show(getFragmentManager(), getString(R.string.delete_payment_tag));
     }
 
     @Override
@@ -102,5 +120,59 @@ public class PaymentsListActivity extends ActionBarActivity implements PaymentsA
         adapter.deletePaymentByPosition(position);
         Toast.makeText(this, getString(R.string.payment_deleted_success), Toast.LENGTH_SHORT).show();
         adapter.notifyDataSetChanged();
+    }
+
+    private void notifyDataSetChanged() {
+        adapter.notifyDataSetChanged();
+    }
+
+    private class Connection extends AsyncTask {
+        Context context;
+        Handler handler;
+
+        public Connection(Context context) {
+            this.context = context;
+            handler =  new Handler(context.getMainLooper());
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            ServerConnector connector = new ServerConnector(context);
+            try {
+                connector.synchronizeWithServer();
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(context, R.string.synchronize_success, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            } catch (IOException | JSONException e) {
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(context, R.string.server_exception_text, Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+            } catch (UnauthorizedException e) {
+                handler.post(new Runnable() {
+                    public void run() {
+                        Toast.makeText(context, R.string.unauthorized_exception_text, Toast.LENGTH_SHORT).show();
+                    }
+                });
+                startSynchronizeActivity();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+
+            ((PaymentsListActivity) context).notifyDataSetChanged();
+        }
+
+        private void startSynchronizeActivity() {
+            Intent i = new Intent(context, SynchronizeActivity.class);
+            context.startActivity(i);
+        }
     }
 }

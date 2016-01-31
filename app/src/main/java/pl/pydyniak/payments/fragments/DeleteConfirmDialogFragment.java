@@ -8,24 +8,25 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import pl.pydyniak.payments.R;
 import pl.pydyniak.payments.activities.PaymentsListActivity;
 
 public class DeleteConfirmDialogFragment extends DialogFragment {
-    Context context;
+    private Context context;
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())
-                .setMessage("Are you sure?")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                .setMessage(getString(R.string.delete_message))
+                .setPositiveButton(getString(R.string.delete_positive_button), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        int position = getArguments().getInt("position");
+                        int position = getArguments().getInt(getString(R.string.positionExtra));
                         OnPositiveDelete onPositiveDelete = (PaymentsListActivity)context;
                         onPositiveDelete.positiveDelete(position);
                     }
                 })
-                .setNegativeButton("No way", null).create();
+                .setNegativeButton(getString(R.string.delete_negative_button), null).create();
     }
 
     public interface OnPositiveDelete {

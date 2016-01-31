@@ -24,9 +24,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="0.6"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-
-                    android:text="Payment name"
+                    android:text="@string/payment_name_label"
                     android:textColor="@android:color/black"
                     android:textSize="30dp" />
 
@@ -54,7 +52,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/linear"
-                android:text="Date time"
+                android:text="@string/payment_date_label"
                 android:textColor="@android:color/black"
                 android:textSize="20dp" />
 
@@ -91,7 +89,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_marginRight="10dp"
-            android:text="55.5"
+            android:text="@string/payment_price_label"
             android:textColor="@android:color/holo_red_dark"
             android:textSize="15dp" />
 
@@ -100,7 +98,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/descriptionLabelView"
-            android:text="Description description description"
             android:textSize="15dp" />
     </RelativeLayout>
 

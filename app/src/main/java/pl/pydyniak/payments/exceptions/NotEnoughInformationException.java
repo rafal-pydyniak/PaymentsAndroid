@@ -1,4 +1,4 @@
-package pl.pydyniak.payments.Exceptions;
+package pl.pydyniak.payments.exceptions;
 
 /**
  * Created by rafal on 12.01.16.
