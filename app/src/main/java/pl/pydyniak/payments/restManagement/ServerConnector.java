@@ -188,7 +188,8 @@ public class ServerConnector {
 
     private void deleteTaskFromServer(long serverTaskId) throws IOException{
         HttpURLConnection connection = tryToOpenConnectionAndReturnIt(serverBaseUrl + "/tasks/" + serverTaskId, "DELETE", false, true);
-        connection.connect();
+        connection.setRequestProperty("Authorization ", "Bearer " + getKeyFromSharedPreferences());
+        connection.getResponseCode();
     }
 
     private void addTasksFromServer(JSONArray tasks) throws JSONException, IOException, UnauthorizedException {
@@ -199,7 +200,7 @@ public class ServerConnector {
             Payment localPayment = db.findPaymentByTimestamp(task.getLong("timestamp"));
             if (localPayment == null) {
                 db.addPaymentAndReturnItsId(serverPayment);
-            } else {
+            } else if (!localPayment.isDeleted()){
                 if (localPayment.getLastUpdated() != serverPayment.getLastUpdated())
                     updatePayment(localPayment, serverPayment);
             }
@@ -300,7 +301,8 @@ public class ServerConnector {
     private void sendJsonRequest(JSONObject jsonObject, HttpURLConnection connection) throws IOException, UnauthorizedException {
         connection.setRequestProperty("Authorization ", "Bearer " + getKeyFromSharedPreferences());
         OutputStream os = connection.getOutputStream();
-        os.write(jsonObject.toString().getBytes("UTF-8"));
+        String json = jsonObject.toString();
+        os.write(json.getBytes("UTF-8"));
         os.close();
         if (connection.getResponseCode() == 401) {
             throw new UnauthorizedException();

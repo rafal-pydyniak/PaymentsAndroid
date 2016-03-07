@@ -126,11 +126,11 @@ public class PaymentDatabase implements PaymentsProvider {
     }
 
     public void updatePayment(Payment payment, long id) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues values = createAndReturnContentValuesForPayment(payment);
-        String selection = DbConstants.PaymentsTable._ID + "=?";
-        String[] selectionArgs = { Long.toString(id) };
-        db.update(DbConstants.PaymentsTable.TABLE_NAME, values, selection, selectionArgs);
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            ContentValues values = createAndReturnContentValuesForPayment(payment);
+            String selection = DbConstants.PaymentsTable._ID + "=?";
+            String[] selectionArgs = {Long.toString(id)};
+            db.update(DbConstants.PaymentsTable.TABLE_NAME, values, selection, selectionArgs);
     }
 
     public Payment findPaymentByTimestamp(long timestamp) {
@@ -153,7 +153,6 @@ public class PaymentDatabase implements PaymentsProvider {
         String selection = DbConstants.PaymentsTable.COLUMN_DELETED + "=?";
         String[] selectionArgs = { Integer.toString(0) };
         return (int) DatabaseUtils.queryNumEntries(db, DbConstants.PaymentsTable.TABLE_NAME, selection, selectionArgs);
-//        return (int) DatabaseUtils.queryNumEntries(db, DbConstants.PaymentsTable.TABLE_NAME, null, null);
     }
 
     public ArrayList<Payment> getAllDeletedTasks() {
@@ -169,13 +168,5 @@ public class PaymentDatabase implements PaymentsProvider {
             tasks.add(createAndReturnPaymentFromCursor(query));
         }
         return tasks;
-    }
-
-    private Cursor getDetailsCursorByPositionFromAllPayments(int position) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        String[] tables = DbConstants.PaymentsTable.allTables;
-        Cursor cursor = db.query(DbConstants.PaymentsTable.TABLE_NAME, tables, null, null, null, null, null);
-        cursor.moveToPosition(position);
-        return cursor;
     }
 }

@@ -5,8 +5,12 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Patterns;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -194,6 +198,42 @@ public class SynchronizeActivity extends ActionBarActivity implements View.OnCli
 
     private boolean validateEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.edit, menu);
+
+        setupActionBar();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    private void setupActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                goBackToMainIntent();
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private void goBackToMainIntent() {
+        Intent intent = new Intent(this, PaymentsListActivity.class);
+        startActivity(intent);
     }
 
     private boolean validatePassword(String password) {

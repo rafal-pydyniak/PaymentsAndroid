@@ -8,7 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by rafal on 29.11.15.
  */
 public class PaymentsDbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
 
     private static final String TABLE_CREATE =
             "CREATE TABLE " + DbConstants.PaymentsTable.TABLE_NAME + " (" +
